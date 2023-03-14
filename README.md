@@ -1,6 +1,7 @@
 This repository includes the data used in the chromosome 4 paper:
 
 * [genetreesupport](genetreesupport) includes main results: quartet support and monophyly across gene trees
+* [root-to-tip/](root-to-tip/) includes root to tip analyses
 * [selection](selection) includes selection analyses
 * [rearrangement](rearrangement) includes rearrangement analyses
 * [coalHMM](coalHMM) includes coalHMM analyses
