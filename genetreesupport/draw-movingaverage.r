@@ -29,11 +29,11 @@ cl= co$Chr %in% c(1:10, 12, 16, 30, "Z", "W")
 g = g[order(g$Taxa,g$Chr,g$ws),]
 
 ### Select group of interest below
-groups=levels(g$Taxa); n ="all";
 groups=c("RheiApterygiCasuari","Rheiformesout","RheiTinamu"); n="Rhei"
 groups=c("PhaethontimorphaeTelluraves","PhaethontimorphaeAequornithes"); n="Phaethontimorphae"
 groups=c( "Strisores", "StrisoresAequornithes"      , "StrisoresAequornithesPhaethontimorphae" , "StrisoresTelluraves"       ); n="Capri"
 groups=c("CPBTL"                    ,     "CPBTL-Coli"                  ,  "CPBTL-Coli-Strigiformes" , "StrigiformesAccipitriformes"); n = "landbirdbase"
+groups=levels(g$Taxa); n ="all";
 groups=c("Columbimorphae","ColumbiformesOtidimorphae","Columbea","Columbiformes"); n="Columbea"
 
 p1=ggplot(aes(x=p,y=ratio,color=Taxa),data= g[ g$Taxa %in% groups  & !g$Taxa=="Columbiformes" & g$ref>1,])+
@@ -106,6 +106,27 @@ ggsave(paste("Combined-",n,".pdf",sep=""),width=7,height = 7)
 ggsave(paste("facet-ma-delta",n,".pdf",sep=""),width=15,height = 9)
   
 
+ggplot(aes(x=p,y=ratio),data=g[ g$Taxa %in% groups &g$ref>1,])+
+  #data=g[grepl("apri",g$Taxa) ,])+
+  #geom_point(alpha=0.25,size=0.2)+
+  theme_bw()+facet_wrap(~Taxa,nrow=7)+
+  #scale_color_brewer(palette = "Dark2",name="Clade")+
+  #geom_ma(color="green",n = 50,linetype=1,alpha=0.45)+
+  geom_ma(n = 200,linetype=1,alpha=0.5)+
+  #geom_ma(color="blue",n = 1000,linetype=1)+
+  coord_cartesian(ylim=c(0.6,0.99))+
+  stat_summary(aes(x=1,yintercept=..y..),geom="hline",color="red",linetype=3)+
+  geom_segment(aes(y=0.6,yend=0.6,x=start,xend=end,color=Chr),size=1,data=co,
+               arrow=arrow(ends = "both",type = "closed",length =unit(1.5,"pt")))+
+  geom_text(aes(y=0.62,x=(start+end)/2,label=substr(Chr,0,2)),size=2.5,data=co[co$end-co$start>30000,])+
+  scale_color_discrete(guide="none")+
+  scale_x_continuous(name="regions (sorted by genome coord)",breaks =c())+
+  scale_y_continuous(name="Branch Quartet Support (BQS)")
+#scale_color_brewer(palette = "Set3",na.value="grey30")#+
+#scale_x_continuous(lim=c(60000,65500))#
+ggsave(paste("clades-nodots",n,".pdf",sep=""),width=10,height = 12)
+ggsave(paste("clades-nodots",n,".png",sep=""),width=10,height = 12)
+
 ######################################## Monophyly
   
   w = read.csv('63K_trees.names_header.txt.xz',sep=" ")
@@ -136,12 +157,13 @@ ggsave(paste("facet-ma-delta",n,".pdf",sep=""),width=15,height = 9)
   co= cbind(dcast(m[,c("Chr","p")],Chr~.,fun.aggregate = min),dcast(m[,c("Chr","p")],Chr~.,fun.aggregate = max))
   names(co)=c("Chr","start",".","end")
   cl= co$Chr %in% c(1:10, 12, 16, 30, "Z", "W")
-  
-  groups=levels(m$Taxa); n ="all";
+ 
+   ### Select group of interest below
   groups=c("RheiApterygiCasuari","Rheiformesout","RheiTinamu"); n="Rhei"
   groups=c("PhaethontimorphaeTelluraves","PhaethontimorphaeAequornithes"); n="Phaethontimorphae"
   groups=c( "Strisores", "StrisoresAequornithes"      , "StrisoresAequornithesPhaethontimorphae" , "StrisoresTelluraves"       ); n="Capri"
   groups=c("CPBTL"                    ,     "CPBTL-Coli"                  ,  "CPBTL-Coli-Strigiformes" , "StrigiformesAccipitriformes"); n = "landbirdbase"
+  groups=unique(m$Taxa); n ="all";
   groups=c("Columbimorphae","ColumbiformesOtidimorphae","Columbea","Columbiformes"); n="Columbea"
   
 p3 =  ggplot(aes(x=p,y=ifelse(is.na(mono),0,1),color=Taxa),data= m[ m$Taxa %in% groups & m$present >1 ,])+
@@ -193,12 +215,6 @@ p3 =  ggplot(aes(x=p,y=ifelse(is.na(mono),0,1),color=Taxa),data= m[ m$Taxa %in% 
   ggsave(paste("monophyly-chr",chr,"-ma",n,".pdf",sep=""),width=7,height = 4)
   
   
-  ggarrange(p3, p4, ncol = 1, labels = c("A", "B"))
-  ggsave(paste("Combined-Monophyly-",n,".pdf",sep=""),width=7,height = 7)
-  
-  p3=p3+theme(legend.position = "none")
-  ggarrange(p1, p2, p3, p4, ncol = 2, nrow=2, labels = c("A", "B" , "C", "D"))
-  ggsave(paste("Combined-both-new",n,".eps",sep=""),width=12,height = 9, device=cairo_ps)
   
   ggplot(aes(x=p,y=ifelse(is.na(mono),0,1)),data=m[ m$Taxa %in% groups ,])+
     #data=g[grepl("apri",g$Taxa) ,])+
@@ -220,57 +236,16 @@ p3 =  ggplot(aes(x=p,y=ifelse(is.na(mono),0,1),color=Taxa),data= m[ m$Taxa %in% 
   #scale_x_continuous(lim=c(60000,65500))#
   ggsave(paste("monophyly-nodots",n,".pdf",sep=""),width=10,height = 12)
   
- 
-##########################################################
   
-  ggplot(aes(x=Gene,color=ratio,y=ratio),
-         data=g[(grepl("olum",g$Taxa) |
-                  grepl("uckoo",g$Taxa) | 
-                  grepl("lami",g$Taxa)|
-                  grepl("esit",g$Taxa)) & g$Taxa!="FlamingoGrebe",])+
-    #geom_point(alpha=0.25,size=0.2)+
-    theme_bw()+facet_wrap(~Taxa,ncol=3)+
-    #scale_color_brewer(palette = "Dark2",name="Clade")+
-    geom_ma(color="green",n = 50,linetype=1,alpha=0.45)+
-    geom_ma(color="red",n = 200,linetype=1,alpha=0.5)+
-    geom_ma(color="blue",n = 1000,linetype=1)+
-    coord_cartesian(ylim=c(0.33,1))+
-    scale_color_continuous(guide="none")#+
-  #scale_x_continuous(lim=c(60000,65500))#
-  ggsave("clades-nodots-Columbea.pdf",width=12,height = 11)
   
+  ############ Combine
+  
+  ggarrange(p3, p4, ncol = 1, labels = c("A", "B"))
+  ggsave(paste("Combined-Monophyly-",n,".pdf",sep=""),width=7,height = 7)
+  
+  p3=p3+theme(legend.position = "none")
+  ggarrange(p1, p2, p3, p4, ncol = 2, nrow=2, labels = c("A", "B" , "C", "D"))
+  ggsave(paste("Combined-both-new",n,".eps",sep=""),width=12,height = 9, device=cairo_ps)
 
-  ggplot(aes(x= ws,color=ratio,y=ratio),
-         data=g[ (grepl("olum",g$Taxa) |
-                   grepl("uckoo",g$Taxa) | 
-                   grepl("lami",g$Taxa)|
-                   grepl("esit",g$Taxa)) & 
-                  g$Taxa!="FlamingoGrebe" &
-                   g$Chromosome == "chr4",])+
-    geom_point(alpha=0.25,size=0.2)+
-    theme_bw()+facet_wrap(~Taxa,ncol=3)+
-    #scale_color_brewer(palette = "Dark2",name="Clade")+
-    #geom_ma(color="green",n = 50,linetype=1,alpha=0.45)+
-    geom_ma(color="red",n = 200,linetype=1,alpha=0.9)+
-    #geom_line(aes(y=rollmean(ratio, 100, na.pad=TRUE)),color="red") +
-    coord_cartesian(ylim=c(0.33,1))
-    #scale_color_continuous(guide="none")+
-  ggsave("clades-nodots-Columbea-chr4.pdf",width=12,height = 11)
-  
-  
-  ggplot(aes(x=Gene,color=ratio,y=ratio),
-         data=g)+
-    #geom_point(alpha=0.25,size=0.2)+
-    theme_bw()+facet_wrap(~Taxa)+
-    #scale_color_brewer(palette = "Dark2",name="Clade")+
-    geom_ma(color="green",n = 50,linetype=1,alpha=0.45)+
-    geom_ma(color="red",n = 200,linetype=1,alpha=0.5)+
-    geom_ma(color="blue",n = 1000,linetype=1)+
-    coord_cartesian(ylim=c(0.33,1))+
-    scale_color_continuous(guide="none")#+
-  #scale_x_continuous(lim=c(60000,65500))#
-  ggsave("clades-nodots.pdf",width=10,height = 10)
-  
-ggsave("clades.png")
 
 
