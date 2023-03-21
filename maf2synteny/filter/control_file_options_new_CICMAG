@@ -1,0 +1,7 @@
+input.file=../vgp_birds_cicmag_$(CHR).maf
+input.file.compression=none
+input.format=Maf
+maf.filter=Subset(species=($(SP1),$(SP2)), strict=yes, remove_duplicates=yes), \
+XFullGap(species=($(SP1),$(SP2))), \
+Merge(species=($(SP2)), dist_max=200, rename_chimeric_chromosomes=yes), \
+Output(file=../CICMAG/$(CHR)/$(SP2)/filtered_new.maf, compression=none, mask=yes)
