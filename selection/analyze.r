@@ -11,6 +11,8 @@ l$labelnew = ifelse( with(l,
               (mRNA_begin>33510000 & mRNA_end<34470000) |
               (mRNA_begin>44130000 & mRNA_end<56810000) ),"outlier","nonoutlier")
  
+write.csv(l[l$labelnew == "outlier",1:3],"outliergenes.csv",row.names = FALSE)
+
 ggplot(aes(x=mRNA_begin,xend=mRNA_end,y=labelnew,yend=labelnew),data=l)+
   geom_segment()+theme_classic()
 
@@ -34,9 +36,6 @@ table(l$labelnew)[2]/(table(l$labelnew)[2]+table(l$labelnew)[1])
 
 l$bestOmega= apply(cbind(l[,3+(1:3)*3],apply(l[,c("Tree1_two_ratio_lnL","Tree2_two_ratio_lnL","Tree3_two_ratio_lnL")],1,which.max)),1,function(x) x[x[4]])
 l$pvalue= apply(cbind(l[,18+(1:3)*2],apply(l[,c("Tree1_two_ratio_lnL","Tree2_two_ratio_lnL","Tree3_two_ratio_lnL")],1,which.max)),1,function(x) x[x[4]])
-table(l$pvalue<0.05,l$labelnew)
-table(l$pvalue<0.01,l$labelnew)
-table(l$pvalue<0.001,l$labelnew)
 
 ggplot(aes(x=(mRNA_begin+mRNA_end)/2,
            color=as.factor(apply(l[,c("Tree1_two_ratio_lnL","Tree2_two_ratio_lnL","Tree3_two_ratio_lnL")],1,which.max)),
