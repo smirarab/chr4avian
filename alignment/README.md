@@ -30,5 +30,6 @@ hal2assemblyHub.py ./js birds.hal  vg_birds_hub
 6. And the MAF was added manually as a track to galGal6 in the hub afterwards.
 
 Included:
+* 57-alignment.xlsx: The list of included species
 * ucsc_birds_scaled_consensus.txt: The input guide tree
 * ucsc_birds_scaled_consensus.wdl: output .wdl for "cactus-prepare".
