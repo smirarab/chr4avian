@@ -6,3 +6,4 @@ This repository includes the data used in the chromosome 4 paper:
 * [rearrangements](rearrangements) includes rearrangement analyses
 * [coalHMM](coalHMM) includes coalHMM analyses
 * [RYcoding-Lie](RYcoding-Lie) includes results of RY coding and Lie Markov models
+* [maf2synteny/](maf2synteny/) methods for synteny analyses
