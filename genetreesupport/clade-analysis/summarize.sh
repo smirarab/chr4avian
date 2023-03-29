@@ -1,7 +1,7 @@
 #!/bin/bash
 bash rename.sh
 rm all-*stat.gz
-grep " " minus-*stat|sed -e "s/:/ /" -e "s/.stat//" > all-minus.stat
+#grep " " minus-*stat|sed -e "s/:/ /" -e "s/.stat//" > all-minus.stat
 #grep " " clade-*stat|sed -e "s/:/ /" -e "s/.stat//" > all-clade.stat
 grep " " clade-*stat|sed -e "s/:/ /" -e "s/.stat//" -e "s/clade-//g" > all-clade.stat
 gzip all*stat

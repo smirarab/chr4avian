@@ -4,13 +4,24 @@ INSTALL:
 tar xvfz Triplet_rooting.tar.gz
 gunzip resolved-genetrees.tre.gz
 pip install TripletVoting
+unzip examined-clades.zip
 ~~~
 
-Run for a particular clade (e.g., `Accipitriformes.txt`):
+To compute the quartet score for a group define in a file called `examplegroup.txt`:
 ~~~bash
-./score-clade.sh clade-defs/Accipitriformes.txt
+./score-clade.sh examplegroup.txt
 ~~~
 
-Examples of clade definition files are available under: `clade-defenitions.zip`
+To run on our predefined groups:
+~~~bash
+for x in `cat groups.txt`; do bash ./score-clade.sh $x; done
+~~~
 
-Script `summarize.sh` combines various files and creates the final `all-clade.stat` file.
+To do monophyletic analyses, run:
+~~~bash
+./count-mopnophyletic.sh resolved-genetrees.tre `cat groups.txt|tr '\n' ' '`
+~~~
+
+Examples of clade definition that can be used later to define new groups: `clade-defenitions.zip`
+
+Script `summarize.sh` combines various files and creates the final `all-clade.stat` and other files used by the R script.
