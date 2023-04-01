@@ -2,6 +2,31 @@ require(ggplot2); require(scales); require(reshape2);library(tidyquant);library(
 library("ggpubr"); require(imager)
 
 
+renameTaxa = list ("Columbea" = "Columbea" ,
+      "Columbiformes+Otidimorphae"  = "ColumbiformesOtidimorphae"     ,
+      "Columbimorphae" ="Columbimorphae",                            
+      "Columbimorphae+Cuculiformes" = "Columbimorphae-Cuckoo",
+      "Columbea+Otidiformae" = "TuBuCuckooColumbea",
+      "Coraciimorphae-Coliiformes"="CPBTL",
+      "Coraciimorphae" = "CPBTL-Coli",
+      "Coraciimorphae+Strigiformes" = "CPBTL-Coli-Strigiformes",
+      "Gruiformes+Charadriiformes" = "GruiformesCharadriiformes",
+      "Gruiformes+CharadriiformesOpisthocomiformes" = "GruiformesCharadriiformesOpisthocomiformes",
+      "Neoaves - Mirandornithes" = "MirandornithesBase",
+      "Phaethontimorphae+Aequornithes" = "PhaethontimorphaeAequornithes",
+      "Phaethontimorphae+Telluraves" = "PhaethontimorphaeTelluraves",
+      "Apterygiformes+Casuariiformes+Rheiformes"= "RheiApterygiCasuari",
+      "Apterygiformes+Casuariiformes+Tinamiformes" = "Rheiformesout",
+      "Rheiformes+Tinamiformes"    = "RheiTinamu" ,
+      "Strigiformes+Accipitriformes" = "StrigiformesAccipitriformes",
+      "Strisores" = "Strisores" ,
+      "Strisores+Aequornithes" = "StrisoresAequornithes",                     
+      "Strisores+Aequornithes+Phaethontimorphae" = "StrisoresAequornithesPhaethontimorphae",
+      "Strisores+Telluraves" ="StrisoresTelluraves")
+
+renameT = function(x) {as.vector(sapply(x, function(y) {
+  names(which(y ==   renameTaxa ))}))}
+
 ######################## quartets
 
 
@@ -28,13 +53,18 @@ names(co)=c("Chr","start",".","end")
 cl= co$Chr %in% c(1:10, 12, 16, 30, "Z", "W")
 g = g[order(g$Taxa,g$Chr,g$ws),]
 
+g$Taxa = factor(g$Taxa)
+levels(g$Taxa) = renameTaxa
+
 ### Select group of interest below
-groups=c("RheiApterygiCasuari","Rheiformesout","RheiTinamu"); n="Rhei"
-groups=c("PhaethontimorphaeTelluraves","PhaethontimorphaeAequornithes"); n="Phaethontimorphae"
-groups=c( "Strisores", "StrisoresAequornithes"      , "StrisoresAequornithesPhaethontimorphae" , "StrisoresTelluraves"       ); n="Capri"
-groups=c("CPBTL"                    ,     "CPBTL-Coli"                  ,  "CPBTL-Coli-Strigiformes" , "StrigiformesAccipitriformes"); n = "landbirdbase"
+groups=renameT(c("RheiApterygiCasuari","Rheiformesout","RheiTinamu")); n="Rhei"
+groups=renameT(c("PhaethontimorphaeTelluraves","PhaethontimorphaeAequornithes")); n="Phaethontimorphae"
+groups=renameT(c( "Strisores", "StrisoresAequornithes"      , "StrisoresAequornithesPhaethontimorphae" , "StrisoresTelluraves")); n="Capri"
+groups=renameT(c("CPBTL", "CPBTL-Coli" ,  "CPBTL-Coli-Strigiformes" , "StrigiformesAccipitriformes")); n = "landbirdbase"
 groups=levels(g$Taxa); n ="all";
-groups=c("Columbimorphae","ColumbiformesOtidimorphae","Columbea","Columbiformes"); n="Columbea"
+groups=renameT(c("Columbimorphae","ColumbiformesOtidimorphae","Columbea","Columbiformes")); n="Columbea"
+
+
 
 p1=ggplot(aes(x=p,y=ratio,color=Taxa),data= g[ g$Taxa %in% groups  & !g$Taxa=="Columbiformes" & g$ref>1,])+
   #data=g[grepl("apri",g$Taxa) ,])+
@@ -109,7 +139,7 @@ ggsave(paste("facet-ma-delta",n,".pdf",sep=""),width=15,height = 9)
 ggplot(aes(x=p,y=ratio),data=g[ g$Taxa %in% groups &g$ref>1,])+
   #data=g[grepl("apri",g$Taxa) ,])+
   #geom_point(alpha=0.25,size=0.2)+
-  theme_bw()+facet_wrap(~Taxa,nrow=7)+
+  theme_classic2()+facet_wrap(~Taxa,nrow=7)+
   #scale_color_brewer(palette = "Dark2",name="Clade")+
   #geom_ma(color="green",n = 50,linetype=1,alpha=0.45)+
   geom_ma(n = 200,linetype=1,alpha=0.5)+
@@ -158,13 +188,16 @@ ggsave(paste("clades-nodots",n,".png",sep=""),width=10,height = 12)
   names(co)=c("Chr","start",".","end")
   cl= co$Chr %in% c(1:10, 12, 16, 30, "Z", "W")
  
+  m$Taxa = factor(m$Taxa)
+  levels(m$Taxa) = renameTaxa
+  
    ### Select group of interest below
-  groups=c("RheiApterygiCasuari","Rheiformesout","RheiTinamu"); n="Rhei"
-  groups=c("PhaethontimorphaeTelluraves","PhaethontimorphaeAequornithes"); n="Phaethontimorphae"
-  groups=c( "Strisores", "StrisoresAequornithes"      , "StrisoresAequornithesPhaethontimorphae" , "StrisoresTelluraves"       ); n="Capri"
-  groups=c("CPBTL"                    ,     "CPBTL-Coli"                  ,  "CPBTL-Coli-Strigiformes" , "StrigiformesAccipitriformes"); n = "landbirdbase"
+  groups=renameT(c("RheiApterygiCasuari","Rheiformesout","RheiTinamu")); n="Rhei"
+  groups=renameT(c("PhaethontimorphaeTelluraves","PhaethontimorphaeAequornithes")); n="Phaethontimorphae"
+  groups=renameT(c( "Strisores", "StrisoresAequornithes"      , "StrisoresAequornithesPhaethontimorphae" , "StrisoresTelluraves")); n="Capri"
+  groups=renameT(c("CPBTL","CPBTL-Coli",  "CPBTL-Coli-Strigiformes" , "StrigiformesAccipitriformes")); n = "landbirdbase"
   groups=unique(m$Taxa); n ="all";
-  groups=c("Columbimorphae","ColumbiformesOtidimorphae","Columbea","Columbiformes"); n="Columbea"
+  groups=renameT(c("Columbimorphae","ColumbiformesOtidimorphae","Columbea","Columbiformes")); n="Columbea"
   
 p3 =  ggplot(aes(x=p,y=ifelse(is.na(mono),0,1),color=Taxa),data= m[ m$Taxa %in% groups & m$present >1 ,])+
     #data=g[grepl("apri",g$Taxa) ,])+
@@ -219,7 +252,7 @@ p3 =  ggplot(aes(x=p,y=ifelse(is.na(mono),0,1),color=Taxa),data= m[ m$Taxa %in% 
   ggplot(aes(x=p,y=ifelse(is.na(mono),0,1)),data=m[ m$Taxa %in% groups ,])+
     #data=g[grepl("apri",g$Taxa) ,])+
     #geom_point(alpha=0.25,size=0.2)+
-    theme_bw()+facet_wrap(~Taxa,nrow=7)+
+    theme_classic2()+facet_wrap(~Taxa,nrow=7)+
     #scale_color_brewer(palette = "Dark2",name="Clade")+
     #geom_ma(color="green",n = 50,linetype=1,alpha=0.45)+
     geom_ma(n = 200,linetype=1,alpha=0.5)+
@@ -235,6 +268,7 @@ p3 =  ggplot(aes(x=p,y=ifelse(is.na(mono),0,1),color=Taxa),data= m[ m$Taxa %in% 
   #scale_color_brewer(palette = "Set3",na.value="grey30")#+
   #scale_x_continuous(lim=c(60000,65500))#
   ggsave(paste("monophyly-nodots",n,".pdf",sep=""),width=10,height = 12)
+  ggsave(paste("monophyly-nodots",n,".png",sep=""),width=10,height = 12)
   
   
   
