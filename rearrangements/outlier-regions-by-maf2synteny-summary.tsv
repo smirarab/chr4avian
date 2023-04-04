@@ -1,16 +1,19 @@
-Species	Chromosome	start	end	length	Description
-Stork	pri.CM030196.2	50603936	51158040	" 554,104 "	Maybe
-Stork	pri.CM030196.1	60750296	85430662	" 24,680,366 "	
-Cuckoo	pri.CM030640.1	47766514	48347479	" 580,965 "	Maybe
-Cuckoo	pri.CM030640.1	57792077	79945563	" 22,153,486 "	
-Turaco	pri.chr5	0	20298300	" 20,298,300 "	
-Turaco	pri.chr5	82403249	85295629	" 2,892,380 "	
-Turaco	pri.chr5	71784262	72391176	" 606,914 "	Maybe
-Flamingo	pri.chr4	50844001	51430490	" 586,489 "	Maybe
-Flamingo	pri.chr4	57314230	82066519	" 24,752,289 "	
-Dove	1.LR594554.2	425884	1300644	" 874,760 "	Maybe
-Dove	1.LR594554.2	9157566	31337916	" 22,180,350 "	
-Dove	1.LR594554.2	31830000	32453776	" 623,776 "	Maybe
-Sandgrouse	pri.chr15	0	15374064	" 15,374,064 "	
-Sandgrouse	pri.chr15	18301388	23630118	" 5,328,730 "	
-Sandgrouse	pri.chr5	47195817	47696776	" 500,959 "	Maybe
+Species	Genome	Chromosome	start	end	length	Description
+Stork	1_bCicMag1	pri.CM030196.2	50603936	51158040	"554,104"	Maybe
+Stork	1_bCicMag1	pri.CM030196.1	60750296	85430662	"24,680,366"	
+Cuckoo	1_bCucCan1	pri.CM030640.1	47766514	48347479	"580,965"	Maybe
+Cuckoo	1_bCucCan1	pri.CM030640.1	57792077	79945563	"22,153,486"	
+Turaco	1_bTauEry1	pri.chr5	0	20298300	"20,298,300"	
+Turaco	1_bTauEry1	pri.chr5	82403249	85295629	"2,892,380"	
+Turaco	1_bTauEry1	pri.chr5	71784262	72391176	"606,914"	Maybe
+Flamingo	1_bPhoRub2	pri.chr4	50844001	51430490	"586,489"	Maybe
+Flamingo	1_bPhoRub2	pri.chr4	57314230	82066519	"24,752,289"	
+Dove	2_bStrTur1	1.LR594554.2	425884	1300644	"874,760"	Maybe
+Dove	2_bStrTur1	1.LR594554.2	9157566	31337916	"22,180,350"	
+Dove	2_bStrTur1	1.LR594554.2	31830000	32453776	"623,776"	Maybe
+Sandgrouse	1_bPteGut1	pri.chr15	0	15374064	"15,374,064"	
+Sandgrouse	1_bPteGut1	pri.chr15	18301388	23630118	"5,328,730"	
+Sandgrouse	1_bPteGut1	pri.chr5	47195817	47696776	"500,959"	Maybe
+Chicken	5_GalGal6	chr4	25555144	33202185	7647041	
+Chicken	5_GalGal6	chr4	34230207	34999560	769353	
+Chicken	5_GalGal6	chr4	44689897	57179311	12489414	
