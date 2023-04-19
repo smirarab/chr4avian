@@ -1,0 +1,289 @@
+---
+title: "Chr4"
+author: "Iker Rivas-González"
+date: "2/16/2021"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+```{r}
+
+library(tidyverse)
+library(ggthemes)
+library(patchwork)
+library(ggHoriPlot)
+
+all_sp <- c(
+'CALNIC_MESUNI_PHORUB_GALGAL', 'CALNIC_PHORUB_MESUNI_GALGAL', 'MESUNI_PHORUB_CALNIC_GALGAL',
+'CALNIC_MESUNI_CROSUL_GALGAL', 'CALNIC_CROSUL_MESUNI_GALGAL', 'MESUNI_CROSUL_CALNIC_GALGAL',
+'CALNIC_PHORUB_CROSUL_GALGAL', 'CALNIC_CROSUL_PHORUB_GALGAL', 'PHORUB_CROSUL_CALNIC_GALGAL',
+'MESUNI_PHORUB_CROSUL_GALGAL', 'MESUNI_CROSUL_PHORUB_GALGAL', 'PHORUB_CROSUL_MESUNI_GALGAL') 
+lookup <- setNames(LETTERS[1:length(all_sp)], all_sp)
+
+
+```
+
+```{r}
+
+full_chr_lst <- c('1', '4')
+
+
+tab_tot <- tibble()
+
+for (spe in all_sp) {
+  print(spe)
+  for (chrom in full_chr_lst) {
+    if (file.exists(paste0('../results/11_chr4_column_bin/info_asym/', spe, '_chr', chrom,'.csv'))) {
+      # print(chrom)
+      tab_tot <- read_csv(paste0('../results/11_chr4_column_bin/info_asym/', spe, '_chr', chrom,'.csv'),
+                        col_types = cols(
+                          position = col_double(),
+                          V0 = col_double(),
+                          V1 = col_double(),
+                          V2 = col_double(),
+                          V3 = col_double()
+                        )) %>% 
+      mutate(sp = spe,
+             chr = chrom) %>% 
+      bind_rows(tab_tot)
+    }
+    
+  }
+}
+
+```
+
+```{r}
+
+tab_plt <- tab_tot %>% 
+  mutate(
+    sp = factor(sp, all_sp), 
+    auto = ifelse(chr %in% c('Z', 'W', 'M'), chr, 'auto'),
+    auto = factor(auto, c('auto', 'Z', 'W', 'M'))
+    ) %>% 
+  filter(auto != 'M') %>% 
+  filter(auto != 'W') %>% 
+  group_by(auto, sp) %>% 
+  summarise_at(c('V0', 'V1', 'V2', 'V3'), sum) %>% 
+  mutate(
+    count = V0+V1+V2+V3,
+    ILS = (V2+V3)/count
+  ) %>% 
+  mutate_at(c('V0', 'V1', 'V2', 'V3'), ~./count) %>% 
+  pivot_longer(c(V0, V1, V2, V3)) %>% 
+  rowwise() %>%
+  mutate(topology = ifelse(name %in% c('V0', 'V1'),
+                           paste(sort(unlist(str_split(sp, '_'))[1:2]), collapse = '_'), name),
+         topology = ifelse(name %in% c('V2'),
+                           paste(sort(unlist(str_split(sp, '_'))[-2][-3]), collapse = '_'), topology),
+         topology = ifelse(name %in% c('V3'),
+                           paste(sort(unlist(str_split(sp, '_'))[2:3]), collapse = '_'), topology)) %>% 
+  mutate(
+    letter = lookup[sp],
+    can = ifelse(name %in% c('V0', 'V1'), 'can', name)
+  )
+
+
+```
+
+
+```{r fig.width=15, fig.height=7}
+
+# library(texp)
+# 
+# sca <- ptexp(seq(0, 1, length.out = 7), 1, 1)
+sca <- c(0, 1/4, 1/3, 1/5, 2/3, 4/5, 1)
+ori <- sca[4]
+sca <- sca[-4]
+
+
+x <- tab_tot %>% 
+  mutate(
+    position_2 = position+99999,
+    chr = factor(chr, full_chr_lst),
+    sp = factor(sp, all_sp)
+  ) %>% 
+  mutate(ILS = (V2+V3)/(V0+V1+V2+V3)) %>% 
+  filter(chr == '4') %>% 
+  group_by(sp) %>% 
+  summarize(ILS_tag = as.character(round(sum(V2+V3)/sum(V0+V1+V2+V3)*100, 2)))
+
+tab_tot %>% 
+  mutate(
+    position_2 = position+99999,
+    chr = factor(chr, full_chr_lst),
+    sp = factor(sp, all_sp)
+  ) %>% 
+  mutate(ILS = (V2+V3)/(V0+V1+V2+V3)) %>% 
+  filter(chr == '4') %>% 
+  group_by(sp) %>% 
+  mutate(ILS_tag = as.character(round(sum(V2+V3)/sum(V0+V1+V2+V3)*100, 2))) -> plt_hori_all
+
+b1 <- plt_hori_all %>% 
+  filter(sp %in% all_sp[1:3]) %>% 
+  ggplot() +
+  stat_horizon(aes(x=position, xend=position_2, y=ILS, fill = after_stat(Cutpoints)),
+               origin = ori, horizonscale = sca) +
+  geom_text(aes(-5e6, 0.5, label = ILS_tag), data = filter(x, sp %in% all_sp[1:3])) +
+  facet_wrap(~sp, ncol = 1, strip.position="right") +
+  theme_few() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.spacing = unit(0, "lines"),
+        strip.text.y = element_text(angle = 0))  +
+  scale_fill_hcl(palette='RdBu')
+
+b2 <- plt_hori_all %>% 
+  filter(sp %in% all_sp[4:6]) %>% 
+  ggplot() +
+  stat_horizon(aes(x=position, xend=position_2, y=ILS, fill = after_stat(Cutpoints)),
+               origin = ori, horizonscale = sca) +
+  geom_text(aes(-5e6, 0.5, label = ILS_tag), data = filter(x, sp %in% all_sp[4:6])) +
+  facet_wrap(~sp, ncol = 1, strip.position="right") +
+  theme_few() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.spacing = unit(0, "lines"),
+        strip.text.y = element_text(angle = 0)) +
+  scale_fill_hcl(palette='RdBu')
+
+b3 <- plt_hori_all %>% 
+  filter(sp %in% all_sp[7:9]) %>% 
+  ggplot() +
+  stat_horizon(aes(x=position, xend=position_2, y=ILS, fill = after_stat(Cutpoints)),
+               origin = ori, horizonscale = sca) +
+  geom_text(aes(-5e6, 0.5, label = ILS_tag), data = filter(x, sp %in% all_sp[7:9])) +
+  facet_wrap(~sp, ncol = 1, strip.position="right") +
+  theme_few() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.spacing = unit(0, "lines"),
+        strip.text.y = element_text(angle = 0)) +
+  scale_fill_hcl(palette='RdBu')
+
+b4 <- plt_hori_all %>% 
+  filter(sp %in% all_sp[10:12]) %>% 
+  ggplot() +
+  stat_horizon(aes(x=position, xend=position_2, y=ILS, fill = after_stat(Cutpoints)),
+               origin = ori, horizonscale = sca) +
+  geom_text(aes(-5e6, 0.5, label = ILS_tag), data = filter(x, sp %in% all_sp[10:12])) +
+  facet_wrap(~sp, ncol = 1, strip.position="right") +
+  theme_few() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.spacing = unit(0, "lines"),
+        strip.text.y = element_text(angle = 0)) +
+  scale_fill_hcl(palette='RdBu') 
+
+(b1/b2/b3/b4) + plot_annotation('Chromosome 4') +
+  plot_layout(guides = "collect") & guides(fill = guide_legend('ILS'))
+  
+ggsave('chr4_horizon_plot.pdf', width=17, height=8)
+
+```
+
+```{r fig.width=15, fig.height=7}
+
+# library(texp)
+# 
+# sca <- ptexp(seq(0, 1, length.out = 7), 1, 1)
+sca <- c(0, 1/4, 1/3, 1/5, 2/3, 4/5, 1)
+ori <- sca[4]
+sca <- sca[-4]
+
+
+x <- tab_tot %>% 
+  mutate(
+    position_2 = position+99999,
+    chr = factor(chr, full_chr_lst),
+    sp = factor(sp, all_sp)
+  ) %>% 
+  mutate(ILS = (V2+V3)/(V0+V1+V2+V3)) %>% 
+  filter(chr == '1') %>% 
+  group_by(sp) %>% 
+  summarize(ILS_tag = as.character(round(sum(V2+V3)/sum(V0+V1+V2+V3)*100, 2)))
+
+tab_tot %>% 
+  mutate(
+    position_2 = position+99999,
+    chr = factor(chr, full_chr_lst),
+    sp = factor(sp, all_sp)
+  ) %>% 
+  mutate(ILS = (V2+V3)/(V0+V1+V2+V3)) %>% 
+  filter(chr == '1') %>% 
+  group_by(sp) %>% 
+  mutate(ILS_tag = as.character(round(sum(V2+V3)/sum(V0+V1+V2+V3)*100, 2))) -> plt_hori_all
+
+b1 <- plt_hori_all %>% 
+  filter(sp %in% all_sp[1:3]) %>% 
+  ggplot() +
+  stat_horizon(aes(x=position, xend=position_2, y=ILS, fill = after_stat(Cutpoints)),
+               origin = ori, horizonscale = sca) +
+  geom_text(aes(-5e6, 0.5, label = ILS_tag), data = filter(x, sp %in% all_sp[1:3])) +
+  facet_wrap(~sp, ncol = 1, strip.position="right") +
+  theme_few() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.spacing = unit(0, "lines"),
+        strip.text.y = element_text(angle = 0))  +
+  scale_fill_hcl(palette='RdBu')
+
+b2 <- plt_hori_all %>% 
+  filter(sp %in% all_sp[4:6]) %>% 
+  ggplot() +
+  stat_horizon(aes(x=position, xend=position_2, y=ILS, fill = after_stat(Cutpoints)),
+               origin = ori, horizonscale = sca) +
+  geom_text(aes(-5e6, 0.5, label = ILS_tag), data = filter(x, sp %in% all_sp[4:6])) +
+  facet_wrap(~sp, ncol = 1, strip.position="right") +
+  theme_few() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.spacing = unit(0, "lines"),
+        strip.text.y = element_text(angle = 0)) +
+  scale_fill_hcl(palette='RdBu')
+
+b3 <- plt_hori_all %>% 
+  filter(sp %in% all_sp[7:9]) %>% 
+  ggplot() +
+  stat_horizon(aes(x=position, xend=position_2, y=ILS, fill = after_stat(Cutpoints)),
+               origin = ori, horizonscale = sca) +
+  geom_text(aes(-5e6, 0.5, label = ILS_tag), data = filter(x, sp %in% all_sp[7:9])) +
+  facet_wrap(~sp, ncol = 1, strip.position="right") +
+  theme_few() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.spacing = unit(0, "lines"),
+        strip.text.y = element_text(angle = 0)) +
+  scale_fill_hcl(palette='RdBu')
+
+b4 <- plt_hori_all %>% 
+  filter(sp %in% all_sp[10:12]) %>% 
+  ggplot() +
+  stat_horizon(aes(x=position, xend=position_2, y=ILS, fill = after_stat(Cutpoints)),
+               origin = ori, horizonscale = sca) +
+  geom_text(aes(-5e6, 0.5, label = ILS_tag), data = filter(x, sp %in% all_sp[10:12])) +
+  facet_wrap(~sp, ncol = 1, strip.position="right") +
+  theme_few() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.spacing = unit(0, "lines"),
+        strip.text.y = element_text(angle = 0)) +
+  scale_fill_hcl(palette='RdBu') 
+
+(b1/b2/b3/b4) + plot_annotation('Chromosome 1') +
+  plot_layout(guides = "collect") & guides(fill = guide_legend('ILS'))
+  
+ggsave('chr1_horizon_plot.pdf', width=17, height=8)
+
+```
+
+
