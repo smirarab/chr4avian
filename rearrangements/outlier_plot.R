@@ -70,3 +70,24 @@ write.table(x=
   select(Species, ID, Chr,  Start    ,  End, Length ,Block ,Strand ,Description, 
          sp, Seq_id, Size,  Chr ,  tag ,  Gal_start, Gal_end),
   file="outlier-regions-by-maf2synteny.tsv",sep ="\t")
+
+
+totab_4_n %>% 
+  group_by(sp, Block) %>% 
+  mutate(
+    Gal_start = Start[Species == 'Chicken'],
+    Gal_end = End[Species == 'Chicken']
+  ) %>% 
+  ungroup() %>% 
+  group_by(Species, Chr) %>% mutate(Chrn = n()) %>%  ungroup()  %>%
+  filter(Chrn > 2) %>% 
+  filter(Species != 'Finch\n(other)') %>% 
+  mutate(
+    outlier =
+      (Gal_start>25555144 & Gal_end< 33202185) |
+      (Gal_start>34230207 & Gal_end< 34999560) |
+      (Gal_start>44689897 & Gal_end< 57179311)
+  )   %>%  filter(outlier)  %>% arrange(Species, Chr,Start) %>%  
+  mutate(Species=sub('\n',' ',Species))%>% 
+  select(Species, ID, Chr,  Start    ,  End, Length ,Block ,Strand ,Description, 
+         sp, Seq_id, Size,  Chr ,  tag ,  Gal_start, Gal_end)

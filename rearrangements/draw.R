@@ -144,7 +144,7 @@ cuts <- rainbowplot %>%
   filter((lag_idx_target != idx_target+1) & (lag_idx_target != idx_target-1)) %>% 
   ungroup()
 
-rainbowplot %>% 
+rainbowplot %>% #filter(grepl("Cuck",sp))  %>% 
   ggplot() +
   #geom_vline(aes(xintercept = x/1000000),
   #           color = 'grey', data = cuts, size = 0.1) +
@@ -157,8 +157,24 @@ rainbowplot %>%
   theme_few() +
   theme(legend.position = 'none') +
   scale_color_manual(values=c("#E6000E","#E6000E","#E6000E","#118EFF","#118EFF","#118EFF","#118EFF"))+
+  #Dove
+  #geom_vline(xintercept = c(51587158,53698656,55785465,60614553,60956969.5,64301766.5,74856316,82157457.5,82414653,82500793,83325162,83839255)/1000000)+
+  #Flamingo
+  #geom_vline(xintercept = c(57081129,57115396,60625380,64242837,82256821,82387464)/1000000)+
+  #Turaco
+  #geom_vline(xintercept = c(377990.5,739885.5,55909486,56046799,60732528,60756246,60949927.5,64493073,82527764.5,82705752,83628778,83663684,83680957.5,83734358)/1000000)+
+  #Sandgrouse
+  #geom_vline(xintercept = c(51457258,53825629.5,55757140.5,56061738.5,57006115,57082300.5,60531580,60832023.5,64390875.5,64578860.5,64870822.5,82177487.5,82476572,83765263.5)/1000000)+
+  #Cuckoo
+  #geom_vline(xintercept = c(64689420,65536386.5)/1000000)+
   coord_fixed()+
   annotate("rect", xmin = 60750296/1000000, xmax = 84036155/1000000, ymin = 0/1000000, ymax =86610582/1000000, alpha = .1)
 
 ggsave('synteny_point_stork_new.png', width=12.5, height=3.5)
 ggsave('synteny_point_stork_new.pdf', width=6, height=5)
+
+write.table(x=rainbowplot %>% arrange(sp,tag,x) %>%
+              mutate(sp=sub('\n',' ',sp)) ,
+            file="figure1b.tsv",sep ="\t")
+
+
