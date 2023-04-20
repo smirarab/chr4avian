@@ -1,3 +1,5 @@
+See [../maf2synteny](../maf2synteny) directory for scripts used to obtain the synteny blocks used here. 
+
 * draw.R: Draws the synteny plot
 * outlier_plot.R: Draws the plot with outliers indicated for each genome. 			
 * galGal4ToGalGal6.over.chain.gz: Chain file to connect galgal4 coordinated (used by B10K) to galgal6 coordinates
