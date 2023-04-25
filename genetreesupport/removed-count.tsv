@@ -1,0 +1,37 @@
+Tree	Count	Dove	Cuckoos	Mesites	Grebe	Sandgrouse
+full-tree	0	0	0			
+Alopecoenas	1	1	0			
+Alopecoenas_Caloenas	2	2	0			
+Alopecoenas_Caloenas_Centropus_ben	3	2	1			
+Alopecoenas_Caloenas_Columba_Patagioenas_Cuculus	5	4	1			
+Alopecoenas_Columba_Columbina_Patagioenas	4	4	0			
+Alopecoenas_Columba_Columbina_Patagioenas_Cuculus	5	4	1			
+Alopecoenas_Cuculus	2	1	1			
+Caloenas	1	1	0			
+Caloenas_Columba_Columbina_Patagioenas_Cuculus	5	4	1			
+Caloenas_Columbina_Patagioenas_Columba	4	4	0			
+Centropus_ben	1	0	1			
+Centropus_uni	1	0	1			
+Centropus_uni_Ceuthmochare_Cuculus_Geococcyx_Piaya_cayana	5	0	5			
+Centropus_uni_Ceuthmochare_Cuculus_Geococcyx_Piaya_cayana_Centropus_ben	6	0	6			
+Ceuthmochare	1	0	1			
+Columba	1	1	0			
+Columbina	1	1	0			
+Crotophaga	1	0	1			
+Cuculus	1	0	1			
+Geococcyx	1	0	1			
+Geococcyx_Crotophaga_Ceuthmochare_Centropus_uni_Centropus_ben	5	0	5			
+Geococcyx_Crotophaga_Ceuthmochare_Centropus_uni_Centropus_ben_Piaya_cayana	6	0	6			
+Mesitornis_unicolor	1	0	0	1		
+Patagioenas	1	1	0	0		
+Patagioenas_Columba_Alopecoenas	3	3	0			
+Piaya_cayana	1	0	1			
+Podiceps_crus	1				1	
+Podilymbus_podiceps	1				1	
+Pterocles_burchelli	1					1
+Pterocles_gutturalis	1					1
+Syrrhaptes_paradoxus	1					1
+all-doves	5	5	0			
+all-doves_Cuculus	6	5	1			
+allcuckoo	7	0	7			
+alldoves-allcucko	12	5	7			
