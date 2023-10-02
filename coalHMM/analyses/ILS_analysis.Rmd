@@ -93,7 +93,7 @@ tab_plt <- tab_tot %>%
 # library(texp)
 # 
 # sca <- ptexp(seq(0, 1, length.out = 7), 1, 1)
-sca <- c(0, 1/4, 1/3, 1/5, 2/3, 4/5, 1)
+sca <- c(0, 1/4, 1/3, 1/2, 2/3, 4/5, 1)
 ori <- sca[4]
 sca <- sca[-4]
 
@@ -178,7 +178,7 @@ b4 <- plt_hori_all %>%
         axis.ticks.y=element_blank(),
         panel.spacing = unit(0, "lines"),
         strip.text.y = element_text(angle = 0)) +
-  scale_fill_hcl(palette='RdBu') 
+  scale_fill_hcl(palette='RdBu')
 
 (b1/b2/b3/b4) + plot_annotation('Chromosome 4') +
   plot_layout(guides = "collect") & guides(fill = guide_legend('ILS'))
@@ -192,7 +192,7 @@ ggsave('chr4_horizon_plot.pdf', width=17, height=8)
 # library(texp)
 # 
 # sca <- ptexp(seq(0, 1, length.out = 7), 1, 1)
-sca <- c(0, 1/4, 1/3, 1/5, 2/3, 4/5, 1)
+sca <- c(0, 1/4, 1/3, 1/2, 2/3, 4/5, 1)
 ori <- sca[4]
 sca <- sca[-4]
 
