@@ -287,3 +287,137 @@ ggsave('chr1_horizon_plot.pdf', width=17, height=8)
 ```
 
 
+
+```{r  fig.width=15, fig.height=7}
+
+labels <- tab_tot %>% 
+  filter(sp %in% c("CALNIC_PHORUB_CROSUL_GALGAL","CALNIC_CROSUL_PHORUB_GALGAL")) |> 
+  group_by(sp, chr) |> 
+  top_n(1, position) |> 
+  ungroup() |> 
+  select(sp, chr, position) |> 
+  separate(sp, c('sp1','sp2','sp3','sp4'), remove = F) |> 
+  rowwise() |> 
+  mutate(
+    V0 = paste0('(((', sp1, ', ', sp2, '), ', sp3, '), ', sp4, ');'),
+    V1 = paste0('(((', sp1, ', ', sp2, '), ', sp3, '), ', sp4, ');'),
+    V2 = paste0('(((', sp1, ', ', sp3, '), ', sp2, '), ', sp4, ');'),
+    V3 = paste0('(((', sp2, ', ', sp3, '), ', sp1, '), ', sp4, ');')
+  ) |> 
+  select(-c(sp1, sp2, sp3, sp4)) |> 
+  group_by(sp, chr, position) |> 
+  pivot_longer(c(V0, V1, V2, V3)) |> 
+  mutate(
+    coord = as.numeric(str_remove_all(name, 'V')),
+    coord = 1/5*(coord+1)
+    )
+
+plot_ribbon_tab <- tab_tot %>% 
+  filter(sp %in% c("CALNIC_PHORUB_CROSUL_GALGAL","CALNIC_CROSUL_PHORUB_GALGAL")) %>%
+  mutate(tot = V0+V1+V2+V3) |> 
+  mutate_at(
+    vars(V0, V1, V2, V3),
+    ~ .x/(tot)
+  ) |> 
+  mutate(
+    V1 = V0+V1,
+    V2 = V1+V2,
+    V3 = V2+V3
+  ) |> 
+  pivot_longer(c(V0, V1, V2, V3)) |> 
+  group_by(sp, chr, position) |> 
+  mutate(
+    ymin = case_when(
+      name == 'V0' ~ 0,
+      name == 'V1' ~ value[name == 'V0'],
+      name == 'V2' ~ value[name == 'V1'],
+      name == 'V3' ~ value[name == 'V2'],
+    ),
+    ymax = case_when(
+      name == 'V0' ~ value[name == 'V0'],
+      name == 'V1' ~ value[name == 'V1'],
+      name == 'V2' ~ value[name == 'V2'],
+      name == 'V3' ~ value[name == 'V3']
+    )
+  )
+
+plot_ribbon_tab |> 
+  ggplot() +
+  geom_line(aes(position, value, color = name)) +
+  geom_ribbon(aes(x = position, ymin=ymin,ymax=ymax,  fill = name),alpha=0.5)+
+  geom_text(aes(position+1000000, coord, label = value, color = name), data = labels, hjust = 0, size = 3) +
+  facet_wrap(~chr+sp,scales = "free", shrink = T,ncol=1)+
+  theme_classic() +
+  scale_x_continuous(expand = expansion(c(0, 0.23), 0))
+
+
+
+ggsave('ribbon_plot.pdf', width=17, height=8)
+
+
+```
+
+
+```{r  fig.width=15, fig.height=7}
+
+labels <- tab_tot %>% 
+  filter(sp %in% c("CALNIC_PHORUB_CROSUL_GALGAL","CALNIC_CROSUL_PHORUB_GALGAL")) |> 
+  group_by(sp, chr) |> 
+  top_n(1, position) |> 
+  ungroup() |> 
+  select(sp, chr, position) |> 
+  separate(sp, c('sp1','sp2','sp3','sp4'), remove = F) |> 
+  rowwise() |> 
+  mutate(
+    V0 = paste0('(((', sort(c(sp1, sp2))[1], ', ', sort(c(sp1, sp2))[2], '), ', sp3, '), ', sp4, ');'),
+    V1 = paste0('(((', sort(c(sp1, sp2))[1], ', ', sort(c(sp1, sp2))[2], '), ', sp3, '), ', sp4, ');'),
+    V2 = paste0('(((', sort(c(sp1, sp3))[1], ', ', sort(c(sp1, sp3))[2], '), ', sp2, '), ', sp4, ');'),
+    V3 = paste0('(((', sort(c(sp2, sp3))[1], ', ', sort(c(sp2, sp3))[2], '), ', sp1, '), ', sp4, ');')
+  ) |> 
+  select(-c(sp1, sp2, sp3, sp4)) |> 
+  group_by(sp, chr, position) |> 
+  pivot_longer(c(V0, V1, V2, V3)) |> 
+  mutate(
+    coord = as.numeric(str_remove_all(name, 'V')),
+    coord = 1/5*(coord+1)
+    ) |> 
+  rename(val = value) |> 
+  ungroup()
+
+plot_ribbon_tab <- tab_tot %>% 
+  filter(sp %in% c("CALNIC_PHORUB_CROSUL_GALGAL","CALNIC_CROSUL_PHORUB_GALGAL")) %>%
+  mutate(tot = V0+V1+V2+V3) |> 
+  mutate_at(
+    vars(V0, V1, V2, V3),
+    ~ .x/(tot)
+  ) |> 
+  pivot_longer(c(V0, V1, V2, V3)) |> 
+  full_join(select(labels, c(sp, chr, name, val)), by = c('sp', 'chr', 'name')) |> 
+  ungroup() |> 
+  arrange(sp, chr, position, val, name) |> 
+  group_by(sp, chr, position) |> 
+  mutate(
+    value = cumsum(value)
+  ) |> 
+  mutate(
+    ymin = c(0, value[1], value[2], value[3]),
+    ymax = c(value[1], value[2], value[3], value[4]),
+  ) 
+
+plot_ribbon_tab |> 
+  ggplot() +
+  geom_line(aes(position, value, color = val, group = name, 
+                linetype = ifelse(name == 'V0', 'Shallow', 'Deep'))) +
+  geom_ribbon(aes(x = position, ymin=ymin,ymax=ymax,  fill = val, group = name), alpha=0.5)+
+  facet_wrap(~chr+sp,scales = "free", shrink = T,ncol=1)+
+  theme_classic() +
+  scale_x_continuous(expand = expansion(0, 0)) +
+  labs(color = 'Topology', fill = 'Topology', linetype = 'Coalescence')
+
+
+
+ggsave('ribbon_plot_same_colors.pdf', width=17, height=8)
+
+
+```
+
