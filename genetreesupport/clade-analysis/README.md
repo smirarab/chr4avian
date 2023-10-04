@@ -8,16 +8,19 @@ unzip examined-clades.zip
 ~~~
 
 To compute the quartet score for a group define in a file called `examplegroup.txt`:
+
 ~~~bash
 ./score-clade.sh examplegroup.txt
 ~~~
 
 To run on our predefined groups:
+
 ~~~bash
 for x in `cat groups.txt`; do bash ./score-clade.sh $x; done
 ~~~
 
 To do monophyletic analyses, run:
+
 ~~~bash
 ./count-mopnophyletic.sh resolved-genetrees.tre `cat groups.txt|tr '\n' ' '`
 ~~~
