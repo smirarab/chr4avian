@@ -408,11 +408,14 @@ plot_ribbon_tab |>
   ggplot() +
   geom_line(aes(position, value, color = val, group = name, 
                 linetype = ifelse(name == 'V0', 'Shallow', 'Deep'))) +
-  geom_ribbon(aes(x = position, ymin=ymin,ymax=ymax,  fill = val, group = name), alpha=0.5)+
+  geom_ribbon(aes(x = position, ymin=ymin,ymax=ymax,  fill = val, group = name, 
+                  alpha = ifelse(name == 'V0', 'Shallow', 'Deep')))+
   facet_wrap(~chr+sp,scales = "free", shrink = T,ncol=1)+
   theme_classic() +
   scale_x_continuous(expand = expansion(0, 0)) +
-  labs(color = 'Topology', fill = 'Topology', linetype = 'Coalescence')
+  scale_alpha_discrete(range = c(0.5, 0.3)) +
+  labs(color = 'Topology', fill = 'Topology', 
+       linetype = 'Coalescence', alpha = 'Coalescence')
 
 
 
