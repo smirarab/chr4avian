@@ -17,10 +17,7 @@ Here,
 
 * `63430_named_random_region.gene.trees.filter_mRNA` is the set of gene trees without contracting low support branches. This file is available on an ftp site linked from the main paper repository: https://github.com/smirarab/avian-data/blob/master/ASTRAL/genetrees.txt
 * `annotations.txt` is provided in the file [annotations.txt](annotations.txt)
-
-And:
-
-* These rooted trees are available as `63430_random_region.gene.trees.filter_mRNA_rooted.tre.gz`
+* The output of the script above is saved in a file called `63430_random_region.gene.trees.filter_mRNA_rooted.tre.gz` (too big for github). 
 
 ### Main figure
 
