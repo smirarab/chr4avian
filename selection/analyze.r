@@ -5,16 +5,13 @@ head(l)
 
 nrow(l)
 
-
+# Column label is wrong. Have to redo:
 l$labelnew = ifelse( with(l,
               (mRNA_begin>25030000 & mRNA_end<32670000) |
               (mRNA_begin>33510000 & mRNA_end<34470000) |
               (mRNA_begin>44130000 & mRNA_end<56810000) ),"outlier","nonoutlier")
  
 write.csv(l[l$labelnew == "outlier",1:3],"outliergenes.csv",row.names = FALSE)
-
-ggplot(aes(x=mRNA_begin,xend=mRNA_end,y=labelnew,yend=labelnew),data=l)+
-  geom_segment()+theme_classic()
 
 
 ggplot(aes(x=mRNA_begin),data=l)+
@@ -27,15 +24,17 @@ ggplot(aes(x=mRNA_begin),data=l)+
   ylab("ECDF of gene start positions")
 ggsave("genes-distribution.pdf",width=4.5,height = 4)
 
-table(l$label)
 table(l$labelnew)
 summary(l$mRNA_end)
 
+### Too many genes in this region? 
 (32670000-25030000+34470000-33510000+56810000-44130000)/90211544
 table(l$labelnew)[2]/(table(l$labelnew)[2]+table(l$labelnew)[1])
+# No!
 
-l$bestOmega= apply(cbind(l[,3+(1:3)*3],apply(l[,c("Tree1_two_ratio_lnL","Tree2_two_ratio_lnL","Tree3_two_ratio_lnL")],1,which.max)),1,function(x) x[x[4]])
-l$pvalue= apply(cbind(l[,18+(1:3)*2],apply(l[,c("Tree1_two_ratio_lnL","Tree2_two_ratio_lnL","Tree3_two_ratio_lnL")],1,which.max)),1,function(x) x[x[4]])
+l$bestindex = apply(l[,c("Tree1_two_ratio_lnL","Tree2_two_ratio_lnL","Tree3_two_ratio_lnL")],1,which.max)
+l$bestOmega= apply(l[,c(3+(1:3)*3,33)],1,function(x) x[x[4]])
+l$pvalue= apply(l[,c(18+(1:3)*2,33)],1,function(x) x[x[4]])
 
 ggplot(aes(x=(mRNA_begin+mRNA_end)/2,
            color=as.factor(apply(l[,c("Tree1_two_ratio_lnL","Tree2_two_ratio_lnL","Tree3_two_ratio_lnL")],1,which.max)),
