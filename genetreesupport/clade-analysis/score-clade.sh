@@ -42,6 +42,3 @@ paste <( nw_prune -v $gt $( cat $1)|nw_stats - |grep leaves|cut -f 2 ) leaves$p.
 
 python $SCRIPT_DIR//Triplet_rooting/tq_distance_to_refs.py -i $gt -r ref-$t.tre -m quartet_raw -o clade-$t$p.txt
 paste maxclade-$t$p.txt clade-$t$p.txt |awk '{print $2,$3,$1,$4,($1-$4)/($1==0?1:$1)}' > clade-$t$p.stat
-#f=clade-$t.txt; l=$(( $( cat $f |wc -l ) / 2 )); paste <( head -n $l $f ) <( tail -n $l $f )|awk '{print $2, $3, $6, $3-$6}' > clade-$t.stat
-
-#zip -m textfiles.zip ref-$t.tre maxclade-$t$p.txt clade-$t$p.txt
