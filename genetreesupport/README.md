@@ -31,5 +31,10 @@ This directory includes the scripts for the main analyses showing quartet score 
 
 ### Taxon sampling
 
-* `removed-count.tsv`: maps tne name of files to how many of each group is removed
-* `all.stat.xz`: For each subsampled tree (first column), it shows impact on quartet score.
+* `removed-count.tsv`: maps the name of files to how many of each group is removed
+* `all.stat.xz`: For each subsampled tree (first column), it shows:
+	* Gene number 
+	* main: score of S2023 topology
+	* alt: score of J2014 topology
+	* diff: the difference between the two. 
+* The diff column (which needs to be flipped in sign) is what is shown in the figure. 
