@@ -6,12 +6,26 @@
 	* The names of outlier genes are in `outliers.txt` 
 
 * The actual gene trees are given in the following files:
+	* With contraction:
 
-~~~
-control.original.alrt0.95.gene.trees.gz                
-non-outlier_chr4.original.alrt0.95.gene.trees.gz       
-outlier_chr4.original.alrt0.95.gene.trees.gz
-control.ry_coding.alrt0.95.gene.trees.gz               
-non-outlier_chr4.ry_coding.gene.alrt0.95.gene.trees.gz 
-outlier_chr4.ry_coding.alrt0.95.gene.trees.gz
-~~~
+	~~~
+	control.original.alrt0.95.gene.trees.gz    
+	control.ry_coding.alrt0.95.gene.trees.gz                 
+	non-outlier_chr4.original.alrt0.95.gene.trees.gz                
+	non-outlier_chr4.ry_coding.gene.alrt0.95.gene.trees.gz 
+	outlier_chr4.ry_coding.alrt0.95.gene.trees.gz
+	outlier_chr4.original.alrt0.95.gene.trees.gz 
+	~~~
+	
+	* Without contraction:
+	
+	~~~
+	control.original.gene.trees.gz 
+	control.ry_coding.gene.trees.gz 
+	non-outlier_chr4.original.gene.trees.gz 
+	non-outlier_chr4.ry_coding.gene.trees.gz 
+	outlier_chr4.original.gene.trees.gz 
+	outlier_chr4.ry_coding.gene.trees.gz
+	~~~
+	
+* Ignore: `outliers.chr4.txt`
