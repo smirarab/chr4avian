@@ -1,10 +1,12 @@
-* Script for the main analyses showing quartet score metrics and monophyly
+This directory includes the scripts for the main analyses showing quartet score metrics (BQS and QQS) and monophyly, in addition to taxon sampling results
 
-* Check out [clade-analysis](clade-analysis) for scripts that perform the actual quartet computing using tqDist and other scripts we developed. 
+### Quartet scores (BQS and QQS)
 
-* `draw-movingaverage.r`: The main R code for drawing moving average based on the text files described below. 
+* Check out [clade-analysis](./clade-analysis/) folder for scripts that perform the actual quartet computing using tqDist and other scripts we developed. 
+
+* [draw-movingaverage.r](draw-movingaverage.r): The main R code for drawing moving average based on the text files described below. 
 	* This file also does some of the calculations necessary to compute QQS and other measures (see below).  
-	* It also calculates the p-values. (look for `P-value` and function `pvalues` in the file)
+	* It also calculates the **p-values**. (look for `P-value` and function `pvalues` in the file)
 * `63K_trees.names_header.txt.xz`: includes only basic information about 63,430 loci, such as their start and end position. 
 * `all-clade.stat.xz` and `'new-all-clade.stat.xz'`: info for branch quartet score (BQS) for each group
 	* The first file includes some extra clades not included as part of the final analyses.  The second file includes some clades missing from our original analyses. The R script selects and renames the appropriate clades. 
@@ -26,5 +28,8 @@
 		* Let $a_1, a_2,$ and $a_3$ be the number of *resolved* quartets supporting each topology. Note that $$d_1=a_2+a_3 \\ d_2=a_2+a_1 \\ d_3=a_1+a_2$$ because each quartet conflicting with any topology has to support one of the other two topologies.  
 		* Simple manipulation shows that the QQS, defined as $$\frac{a_1}{a_1+a_2+a_3}$$ (for first topology) is given by $$\frac{d_2+d_3-d_1}{d_1+d_2+d_3}$$ and ditto for the other two topologies. These are computed in the R code. 
 		* These are values shown in moving averages and are used to compute the p-values. Note that to compute monophyly, we simply test to see if $a_i=1$.
-* `all-monphyletic.txt.xz`: shows the monophyletic genes for each group
-* `all-present.txt.xz`: shows the number of taxa present from each group
+
+### Taxon sampling
+
+* `removed-count.tsv`: maps tne name of files to how many of each group is removed
+* `all.stat.xz`: For each subsampled tree (first column), it shows impact on quartet score.
