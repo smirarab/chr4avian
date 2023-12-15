@@ -1,0 +1,3 @@
+awk 'FNR==NR { a[$0] = FNR; next } $0 in a { print a[$0], NR  -635 }' control.original.alrt0.95.gene.trees 63430_filter_mRNA_random_region.gene.trees.aLRT0.05.gene.trees |tee control-indices.txt
+awk 'FNR==NR { a[$0] = FNR; next } $0 in a { print a[$0], NR  -635 }' outlier_chr4.original.alrt0.95.gene.trees 63430_filter_mRNA_random_region.gene.trees.aLRT0.05.gene.trees |tee outlier-indices.txt
+awk 'FNR==NR { a[$0] = FNR; next } $0 in a { print a[$0], NR -635  }' non-outlier_chr4.original.alrt0.95.gene.trees 63430_filter_mRNA_random_region.gene.trees.aLRT0.05.gene.trees |tee non-outlier-indices.txt
