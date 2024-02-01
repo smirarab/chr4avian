@@ -7,8 +7,8 @@ library(forcats)
 
 
 renameTaxa = list ("Columbea (J2014)" = "Columbea" ,
-      "Columbimorphae+Otidimorphae (S2023)"  = "ColumbiformesOtidimorphae"     ,
-      "Columbimorphae (J2014 and S2023)" ="Columbimorphae",                            
+      "Columbimorphae+Otidimorphae (S2024)"  = "ColumbiformesOtidimorphae"     ,
+      "Columbimorphae (J2014 and S2024)" ="Columbimorphae",                            
       "Columbimorphae+Cuculiformes" = "Columbimorphae-Cuckoo",
       "Columbea+Otidiformae" = "TuBuCuckooColumbea",
       "Coraciimorphae-Coliiformes"="CPBTL",
@@ -342,9 +342,9 @@ ggsave("all-clades-QQS-facet.png",width=14,height = 14)
 
 r3[r3$clade %in% c("N61", "N62" ,"Columbea"),] %>% 
   mutate(clade = fct_recode(clade, 
-                            "S2023:\n(Columbaves)(Elementaves+Telluraves)|\n(Mirandornithes),(Outgroups)" = "N61",
+                            "S2024:\n(Columbaves)(Elementaves+Telluraves)|\n(Mirandornithes),(Outgroups)" = "N61",
                             "J2014:\n(Columbimorphae)(Mirandornithes)|\n(Passerea),(Outgroups)" = "Columbea",
-                            "J2014 nad S2023:\n(Columbiformes)(Mesitornithiformes+Pterocliformes)|\n(Otidimorphae),(Other birds)" = "N62")) %>%
+                            "J2014 nad S2024:\n(Columbiformes)(Mesitornithiformes+Pterocliformes)|\n(Otidimorphae),(Other birds)" = "N62")) %>%
 ggplot(aes(x=p,y=value,color=variable, 
            size=variable,alpha=variable))+
   theme_classic()+facet_wrap(~clade,ncol=3)+
@@ -384,7 +384,7 @@ p6=melt(r[r$Chr %in%
     ,"we"      ,   "size"     ,  "wstart" ,    "Chr" )],
     measure.vars = c( "C1,C2|S,O" , "C1,S|C2,O" , "C2,S|C1,O" )) %>% 
     filter(variable == "C1,C2|S,O") %>% 
-    mutate( clade = fct_recode(clade, "S2023" = "N61", 
+    mutate( clade = fct_recode(clade, "S2024" = "N61", 
                               "J2014 (Columbea)" = "Columbea"
                             #"3rd alt" = "C2,S|C1,O"
                                   )
@@ -418,7 +418,7 @@ p7 = melt(r[r$Chr ==4    & r$clade %in% c("N61","Columbea") ,c(
               ,"we"      ,   "size"     ,  "wstart" ,    "Chr" )],
           measure.vars = c( "C1,C2|S,O" , "C1,S|C2,O" , "C2,S|C1,O" )) %>% 
   filter(variable == "C1,C2|S,O") %>% 
-  mutate( clade = fct_recode(clade, "S2023" = "N61", 
+  mutate( clade = fct_recode(clade, "S2024" = "N61", 
                              "J2014 (Columbea)" = "Columbea"
                              #"3rd alt" = "C2,S|C1,O"
   )
@@ -453,7 +453,7 @@ p8=melt(r[r$Chr %in%
             ,"we"      ,   "size"     ,  "wstart" ,    "Chr" )],
         measure.vars = c( "C1,C2|S,O" , "C1,S|C2,O" , "C2,S|C1,O" )) %>% 
   filter(variable == "C1,C2|S,O") %>% 
-  mutate( clade = fct_recode(clade, "S2023" = "N61", 
+  mutate( clade = fct_recode(clade, "S2024" = "N61", 
                              "J2014 (Columbea)" = "Columbea"
                              #"3rd alt" = "C2,S|C1,O"
   )) %>%
@@ -485,7 +485,7 @@ p9 = melt(r[r$Chr ==4    & r$clade %in% c("N61","Columbea") ,c(
   ,"we"      ,   "size"     ,  "wstart" ,    "Chr" )],
   measure.vars = c( "C1,C2|S,O" , "C1,S|C2,O" , "C2,S|C1,O" )) %>% 
   filter(variable == "C1,C2|S,O") %>% 
-  mutate( clade = fct_recode(clade, "S2023" = "N61", 
+  mutate( clade = fct_recode(clade, "S2024" = "N61", 
                              "J2014 (Columbea)" = "Columbea"
                              #"3rd alt" = "C2,S|C1,O"
   ) ) %>%
