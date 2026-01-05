@@ -15,6 +15,8 @@ ro = levels(reorder(rc$Tree,100*rc$Count+10*rc$Dove+rc$Cuckoos))
 w = read.csv('63K_trees.names_header.txt.xz',sep=" ")
 outliers = which((w$Chromosome == "chr4") & ( (w$ws >=25030000 & w$ws <=32670000) |  (w$ws >=33510000  & w$ws <=34470000) | (w$ws >=44130000 & w$ws <=56810000)))
 
+# q = q[q$main+q$alt>0,] Would have been good; we didn't but luckily would remove only 9 genes.
+
 ggplot(aes(x=factor(removed,levels=ro,ordered=T),y=diff),
        data=rbind(data.frame(q,t="All loci"),
                   data.frame(q[!q$Gene %in% outliers,],
@@ -44,3 +46,5 @@ ggplot(aes(x=factor(Tree,levels=ro),y=variable,
   scale_x_discrete(name="")
 #geom_text(aes(label=value))+
 ggsave("removed-legend-hor.pdf",height=1,width = 4.3)
+
+nrow(q[q$removed=="full-tree",])
